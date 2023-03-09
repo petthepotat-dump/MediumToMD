@@ -161,7 +161,10 @@ if not os.path.exists("product"):
 # TODO -- add in videos + other custom things
 
 
-def save_to_markdown(link, driver):
+def save_to_markdown(url, driver):
+    # remove config and header from link
+    link = url.split("?")[0]
+
     name = "-".join(link.split("/")[-1].split('-')[:-1])
     filepath = "product/" + name + ".md"
     # collect all information and save to markdown file
