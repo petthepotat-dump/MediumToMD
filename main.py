@@ -107,8 +107,8 @@ class GetInformation:
         # get iamge name
         name = image.split("/")[-1][2:]
         # check if "assets" exists
-        if not os.path.exists(os.path.join(folderpath, "product")):
-            os.mkdir(os.path.join(folderpath, "product"))
+        if not os.path.exists(os.path.join(folderpath, "assets")):
+            os.mkdir(os.path.join(folderpath, "assets"))
         # check if "images" exists
         if not os.path.exists(os.path.join(folderpath, "assets/images")):
             os.mkdir(os.path.join(folderpath, "assets/images"))
