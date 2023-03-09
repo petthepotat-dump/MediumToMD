@@ -9,8 +9,21 @@ from selenium.webdriver.common.by import By
 
 
 # ----------------------------------
+intel = "chromedriver-intel"
+arm64 = "chromedriver-arm64"
 
-driver = webdriver.Chrome()
+# detect if os uses arm64 or 32bit, mac silicon, or mac m chip
+if os.uname().machine == "x86_64":
+    # intel
+    print("Intel detected")
+    tt = intel
+elif os.uname().machine == "arm64":
+    # mac silicon
+    print("Mac Silicon detected")
+    tt = arm64
+
+
+driver = webdriver.Chrome(tt)
 # get article link
 link = input("Input Article Link: ")
 # link = "https://dariusforoux.medium.com/protect-your-thinking-time-if-you-want-to-stay-productive-d66e63825d05"
@@ -156,10 +169,7 @@ time.sleep(3)
 if not os.path.exists("product"):
     os.mkdir("product")
 
-
-
 # TODO -- add in videos + other custom things
-
 
 def save_to_markdown(url, driver):
     # remove config and header from link
@@ -212,37 +222,9 @@ def save_to_markdown(url, driver):
 
     file.close()
 
+
+# actually save the file to markdown
 save_to_markdown(link, driver)
-
-# # find all elements in first level of container
-# for i, elem in enumerate(container.find_elements(By.XPATH, ".//*")):
-#     # check if element is: p, div, ul, blockquote, or figure
-#     if elem.tag_name == "p":
-#         print(GetInformation.getp(elem).to_markdown())
-#     elif elem.tag_name == "h1":
-#         print(GetInformation.geth1(elem).to_markdown())
-#     elif elem.tag_name == "h2":
-#         print(GetInformation.geth2(elem).to_markdown())
-#     elif elem.tag_name == "ul":
-#         print(GetInformation.getlist(elem).to_markdown())
-#     elif elem.tag_name == "blockquote":
-#         print(GetInformation.getquote(elem).to_markdown())
-#     elif elem.tag_name == "figure":
-#         print('image')
-
-
-# # get title
-# titlediv = container.find_element(By.CLASS_NAME, convert_to_css_selector("pw-post-title hd he hf bd hg hh hi hj hk hl hm hn ho hp hq hr hs ht hu hv hw hx hy hz ia ib bi"))
-# title = titlediv.text
-# print(title)
-
-# # get subtitle
-# subdiv = container.find_element(By.CLASS_NAME, convert_to_css_selector("pw-subtitle-paragraph ic he hf bd b id ie if ig ih ii ij ik il im in io ip iq ir is it fv"))
-# sub = subdiv.text
-# print(sub)
-
-# # get image
-
 
 
 
