@@ -1,4 +1,5 @@
 import os
+import sys
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
@@ -9,56 +10,81 @@ from selenium.webdriver.common.by import By
 
 
 # ----------------------------------
+intel = "chromedriver-intel"
+arm64 = "chromedriver-arm64"
 
-driver = webdriver.Chrome()
+# detect if os uses arm64 or 32bit, mac silicon, or mac m chip
+
+# check if windows or mac
+if sys.platform == "win32":
+    tt = intel
+elif sys.platform == "darwin":
+    if os.uname().machine == "x86_64":
+        # intel
+        print("Intel detected")
+        tt = intel
+    elif os.uname().machine == "arm64":
+        # mac silicon
+        print("Mac Silicon detected")
+        tt = arm64
+
+
+driver = webdriver.Chrome(tt)
 # get article link
 # link = input("Input Article Link: ")
 # link = "https://dariusforoux.medium.com/protect-your-thinking-time-if-you-want-to-stay-productive-d66e63825d05"
 # link = "https://jackiecolburn.medium.com/more-icebreakers-you-can-steal-for-better-meetings-72afad91067d"
+
 
 def convert_to_css_selector(selector):
     return ".".join(selector.split())
 
 # ----------------------------------
 
+
 class Header:
-    def __init__(self, text, priority = 1):
+    def __init__(self, text, priority=1):
         self.text = text
         self.priority = priority
-    
+
     def to_markdown(self):
         return f"{'#'*self.priority} {self.text}"
+
 
 class Paragraph:
     def __init__(self, text):
         self.text = text
-    
+
     def to_markdown(self):
         return self.text
+
 
 class List:
     def __init__(self, items):
         self.items = items
-    
+
     def to_markdown(self):
         return "\n".join([f"- {item}" for item in self.items])
+
 
 class Quote:
     def __init__(self, text):
         self.text = text
-    
+
     def to_markdown(self):
         return f"```{self.text}```\n"
+
 
 class Image:
     def __init__(self, filelink, link=None):
         self.flink = filelink
         self.link = link
-    
+
     def to_markdown(self):
         return f"![Image]({self.flink})" if not self.link else f"![Image]({self.link})"
 
 # ----------------------------------
+
 
 class GetInformation:
     # functions for grabbing data
@@ -82,13 +108,13 @@ class GetInformation:
         # get h1
         h1 = element.text
         return Header(text=h1, priority=1)
-    
+
     @staticmethod
     def geth2(element):
         # get h2
         h2 = element.text
         return Header(text=h2, priority=2)
-    
+
     # ----------------------------------
     # get paragraph
     @staticmethod
@@ -145,6 +171,16 @@ class GetInformation:
         return List(listtext)
 
 # ----------------------------------
+<<<<<<< HEAD
+=======
+
+
+# load page
+driver.get(link)
+# wait for other things to load
+print("Pausing for other sections to load")
+time.sleep(3)
+>>>>>>> 295deeb8dd3e057892cab2dc1d444b10bfa9bd87
 
 
 def load_page(url, driver):
@@ -166,8 +202,15 @@ def save_to_markdown(url, driver):
     name = "-".join(link.split("/")[-1].split('-')[:-1])
     filepath = "product/" + name + ".md"
     # collect all information and save to markdown file
+<<<<<<< HEAD
     statsdiv = driver.find_element(By.CLASS_NAME, convert_to_css_selector("pw-post-byline-header"))
     authordiv = statsdiv.find_element(By.CLASS_NAME, convert_to_css_selector("pw-author"))
+=======
+    statsdiv = driver.find_element(By.CLASS_NAME, convert_to_css_selector(
+        "pw-post-byline-header eb ec ed ee ef eg eh ei ej ek l"))
+    authordiv = statsdiv.find_element(
+        By.CLASS_NAME, convert_to_css_selector("pw-author bd b ev ew bi"))
+>>>>>>> 295deeb8dd3e057892cab2dc1d444b10bfa9bd87
     author = authordiv.text
 
     # FOR non memebr
@@ -210,6 +253,7 @@ def save_to_markdown(url, driver):
 
     file.close()
 
+<<<<<<< HEAD
 
 # ----------------------------------
 
@@ -219,4 +263,8 @@ for url in DATA.splitlines():
     save_to_markdown(url, driver)
 
 
+=======
+>>>>>>> 295deeb8dd3e057892cab2dc1d444b10bfa9bd87
 
+# actually save the file to markdown
+save_to_markdown(link, driver)
