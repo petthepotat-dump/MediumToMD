@@ -171,16 +171,6 @@ class GetInformation:
         return List(listtext)
 
 # ----------------------------------
-<<<<<<< HEAD
-=======
-
-
-# load page
-driver.get(link)
-# wait for other things to load
-print("Pausing for other sections to load")
-time.sleep(3)
->>>>>>> 295deeb8dd3e057892cab2dc1d444b10bfa9bd87
 
 
 def load_page(url, driver):
