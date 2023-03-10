@@ -12,7 +12,7 @@ from selenium.webdriver.common.by import By
 
 driver = webdriver.Chrome()
 # get article link
-link = input("Input Article Link: ")
+# link = input("Input Article Link: ")
 # link = "https://dariusforoux.medium.com/protect-your-thinking-time-if-you-want-to-stay-productive-d66e63825d05"
 # link = "https://jackiecolburn.medium.com/more-icebreakers-you-can-steal-for-better-meetings-72afad91067d"
 
@@ -145,31 +145,29 @@ class GetInformation:
         return List(listtext)
 
 # ----------------------------------
-    
-# load page
-driver.get(link)
-# wait for other things to load
-print("Pausing for other sections to load")
-time.sleep(3)
 
+
+def load_page(url, driver):
+    driver.get(url)
+    # wait for page to load
+    time.sleep(3)
+    
 # check if product exists
 if not os.path.exists("product"):
     os.mkdir("product")
 
-
-
 # TODO -- add in videos + other custom things
 
-
 def save_to_markdown(url, driver):
+    load_page(url, driver)
     # remove config and header from link
     link = url.split("?")[0]
 
     name = "-".join(link.split("/")[-1].split('-')[:-1])
     filepath = "product/" + name + ".md"
     # collect all information and save to markdown file
-    statsdiv = driver.find_element(By.CLASS_NAME, convert_to_css_selector("pw-post-byline-header eb ec ed ee ef eg eh ei ej ek l"))
-    authordiv = statsdiv.find_element(By.CLASS_NAME, convert_to_css_selector("pw-author bd b ev ew bi"))
+    statsdiv = driver.find_element(By.CLASS_NAME, convert_to_css_selector("pw-post-byline-header"))
+    authordiv = statsdiv.find_element(By.CLASS_NAME, convert_to_css_selector("pw-author"))
     author = authordiv.text
 
     # FOR non memebr
@@ -212,37 +210,13 @@ def save_to_markdown(url, driver):
 
     file.close()
 
-save_to_markdown(link, driver)
 
-# # find all elements in first level of container
-# for i, elem in enumerate(container.find_elements(By.XPATH, ".//*")):
-#     # check if element is: p, div, ul, blockquote, or figure
-#     if elem.tag_name == "p":
-#         print(GetInformation.getp(elem).to_markdown())
-#     elif elem.tag_name == "h1":
-#         print(GetInformation.geth1(elem).to_markdown())
-#     elif elem.tag_name == "h2":
-#         print(GetInformation.geth2(elem).to_markdown())
-#     elif elem.tag_name == "ul":
-#         print(GetInformation.getlist(elem).to_markdown())
-#     elif elem.tag_name == "blockquote":
-#         print(GetInformation.getquote(elem).to_markdown())
-#     elif elem.tag_name == "figure":
-#         print('image')
+# ----------------------------------
 
-
-# # get title
-# titlediv = container.find_element(By.CLASS_NAME, convert_to_css_selector("pw-post-title hd he hf bd hg hh hi hj hk hl hm hn ho hp hq hr hs ht hu hv hw hx hy hz ia ib bi"))
-# title = titlediv.text
-# print(title)
-
-# # get subtitle
-# subdiv = container.find_element(By.CLASS_NAME, convert_to_css_selector("pw-subtitle-paragraph ic he hf bd b id ie if ig ih ii ij ik il im in io ip iq ir is it fv"))
-# sub = subdiv.text
-# print(sub)
-
-# # get image
-
+# DATA = input("Enter link/links: ")
+DATA = open("links", "r").read()
+for url in DATA.splitlines():
+    save_to_markdown(url, driver)
 
 
 
