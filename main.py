@@ -202,15 +202,8 @@ def save_to_markdown(url, driver):
     name = "-".join(link.split("/")[-1].split('-')[:-1])
     filepath = "product/" + name + ".md"
     # collect all information and save to markdown file
-<<<<<<< HEAD
     statsdiv = driver.find_element(By.CLASS_NAME, convert_to_css_selector("pw-post-byline-header"))
     authordiv = statsdiv.find_element(By.CLASS_NAME, convert_to_css_selector("pw-author"))
-=======
-    statsdiv = driver.find_element(By.CLASS_NAME, convert_to_css_selector(
-        "pw-post-byline-header eb ec ed ee ef eg eh ei ej ek l"))
-    authordiv = statsdiv.find_element(
-        By.CLASS_NAME, convert_to_css_selector("pw-author bd b ev ew bi"))
->>>>>>> 295deeb8dd3e057892cab2dc1d444b10bfa9bd87
     author = authordiv.text
 
     # FOR non memebr
@@ -253,7 +246,6 @@ def save_to_markdown(url, driver):
 
     file.close()
 
-<<<<<<< HEAD
 
 # ----------------------------------
 
@@ -263,8 +255,6 @@ for url in DATA.splitlines():
     save_to_markdown(url, driver)
 
 
-=======
->>>>>>> 295deeb8dd3e057892cab2dc1d444b10bfa9bd87
 
 # actually save the file to markdown
 save_to_markdown(link, driver)
