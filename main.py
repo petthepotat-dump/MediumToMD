@@ -239,7 +239,7 @@ def save_to_markdown(url):
                 skip += 1
             elif elem.tag_name == "figure":
                 line = GetInformation.getimage(elem, folderpath).to_markdown()
-            print(line)
+            # print(line)
             file.write(f"{line}\n")
 
     file.close()
@@ -256,7 +256,7 @@ if not os.path.exists("product"):
 # ----------------------------------
 
 # DATA = input("Enter link/links: ")
-# DATA = open("links", "r").read()
-DATA = "https://baos.pub/if-i-could-read-only-5-books-for-the-rest-of-my-life-id-read-these-e3d1a931d101"
+DATA = open("links", "r").read()
+# DATA = "https://baos.pub/if-i-could-read-only-5-books-for-the-rest-of-my-life-id-read-these-e3d1a931d101"
 for url in DATA.splitlines():
     save_to_markdown(url)
