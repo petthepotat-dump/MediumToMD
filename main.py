@@ -13,6 +13,7 @@ from selenium.webdriver.common.by import By
 # ----------------------------------
 intel = "chromedriver-intel"
 arm64 = "chromedriver-arm64"
+COUNT = 0
 
 # detect if os uses arm64 or 32bit, mac silicon, or mac m chip
 
@@ -28,14 +29,6 @@ elif sys.platform == "darwin":
         # mac silicon
         print("Mac Silicon detected")
         tt = arm64
-
-
-driver = webdriver.Chrome(tt)
-COUNT = 0
-# get article link
-# link = input("Input Article Link: ")
-# link = "https://dariusforoux.medium.com/protect-your-thinking-time-if-you-want-to-stay-productive-d66e63825d05"
-# link = "https://jackiecolburn.medium.com/more-icebreakers-you-can-steal-for-better-meetings-72afad91067d"
 
 
 def convert_to_css_selector(selector):
@@ -179,21 +172,14 @@ class GetInformation:
 # ----------------------------------
 
 
-def load_page(url, driver):
-    driver.quit()
+def load_page(url):
     driver = webdriver.Chrome(tt)
     driver.get(url)
+    return driver
 
 
-# check if product exists
-if not os.path.exists("product"):
-    os.mkdir("product")
-
-# TODO -- add in videos + other custom things
-
-
-def save_to_markdown(url, driver):
-    load_page(url, driver)
+def save_to_markdown(url):
+    driver = load_page(url)
     # scroll down
     driver.execute_script("window.scrollTo(300, document.body.scrollHeight);")
     # wait for page to load
@@ -218,7 +204,7 @@ def save_to_markdown(url, driver):
     # get first div
     main = section.find_element(By.TAG_NAME, "div")
     # get second child div
-    container = main.find_element(By.XPATH, "./*[2]")
+    containers = main.find_elements(By.XPATH, "./*")
 
     # file = open(filepath, "w", encoding='')
     file = codecs.open(filepath, "w", "utf-8")
@@ -230,34 +216,47 @@ def save_to_markdown(url, driver):
 
     # instead of printint to console, write to file'
     # get all elements in first level of container
-    skip = 0
-    for i, elem in enumerate(container.find_elements(By.XPATH, ".//*")):
-        if skip > 0:
-            skip -= 1
+    for j, container in enumerate(containers):
+        if j == 0:
             continue
-        # check if element is: p, div, ul, blockquote, or figure
-        if elem.tag_name == "p":
-            file.write(GetInformation.getp(elem).to_markdown())
-        elif elem.tag_name == "h1":
-            file.write(GetInformation.geth1(elem).to_markdown())
-        elif elem.tag_name == "h2":
-            file.write(GetInformation.geth2(elem).to_markdown())
-        elif elem.tag_name == "ul":
-            file.write(GetInformation.getlist(elem).to_markdown())
-        elif elem.tag_name == "blockquote":
-            file.write(GetInformation.getquote(elem).to_markdown())
-            skip += 1
-        elif elem.tag_name == "figure":
-            file.write(GetInformation.getimage(elem, folderpath).to_markdown())
-        file.write("\n")
+        skip = 0
+        for i, elem in enumerate(container.find_elements(By.XPATH, ".//*")):
+            if skip > 0:
+                skip -= 1
+                continue
+            # check if element is: p, div, ul, blockquote, or figure
+            line = ""
+            if elem.tag_name == "p":
+                line = GetInformation.getp(elem).to_markdown()
+            elif elem.tag_name == "h1":
+                line = GetInformation.geth1(elem).to_markdown()
+            elif elem.tag_name == "h2":
+                line = GetInformation.geth2(elem).to_markdown()
+            elif elem.tag_name == "ul":
+                line = GetInformation.getlist(elem).to_markdown()
+            elif elem.tag_name == "blockquote":
+                line = GetInformation.getquote(elem).to_markdown()
+                skip += 1
+            elif elem.tag_name == "figure":
+                line = GetInformation.getimage(elem, folderpath).to_markdown()
+            print(line)
+            file.write(f"{line}\n")
 
     file.close()
 
+# ----------------------------------
+
+
+# check if product exists
+if not os.path.exists("product"):
+    os.mkdir("product")
+
+# TODO -- add in videos + other custom things
 
 # ----------------------------------
 
 # DATA = input("Enter link/links: ")
-DATA = open("links", "r").read()
-# DATA = "https://dariusforoux.medium.com/the-5-habits-of-financially-responsible-people-a14fd0490c4e"
+# DATA = open("links", "r").read()
+DATA = "https://baos.pub/if-i-could-read-only-5-books-for-the-rest-of-my-life-id-read-these-e3d1a931d101"
 for url in DATA.splitlines():
-    save_to_markdown(url, driver)
+    save_to_markdown(url)
