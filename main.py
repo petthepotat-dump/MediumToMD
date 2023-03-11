@@ -24,10 +24,3 @@ while True:
         mediumtomd.save_to_markdown(url)
     else:
         break
-
-
-# # DATA = input("Enter link/links: ")
-# DATA = open("links", "r").read()
-# # DATA = "https://nickwignall.medium.com/5-psychological-reasons-you-dont-feel-confident-58d83b4c9d60"
-# for url in DATA.splitlines():
-#     mediumtomd.save_to_markdown(url)
