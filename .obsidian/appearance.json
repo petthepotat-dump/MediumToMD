@@ -1,0 +1,11 @@
+{
+  "translucency": true,
+  "monospaceFontFamily": "Calibri",
+  "textFontFamily": "Crimson Text",
+  "baseFontSize": 19,
+  "accentColor": "#ff0066",
+  "theme": "moonstone",
+  "cssTheme": "Sanctum",
+  "interfaceFontFamily": "Cambria Math,Calibri",
+  "nativeMenus": false
+}
