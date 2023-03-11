@@ -67,7 +67,7 @@ class Quote:
         self.text = text
 
     def to_markdown(self):
-        return f"```{self.text}```\n"
+        return f"\n`{self.text}`\n"
 
 
 class Image:
@@ -134,11 +134,11 @@ class GetInformation:
         if not os.path.exists(os.path.join(folderpath, "assets/images")):
             os.mkdir(os.path.join(folderpath, "assets/images"))
         # create image path
-        imagepath = os.path.join(folderpath, "assets/images/", name)
+        imagepath = folderpath + "/assets/images/" + name
         # check if image already downloaded
         if os.path.exists(imagepath):
             print("Image already downloaded.")
-            return Image(os.path.relpath(imagepath, "assets"))
+            return Image("../product/assets/images/" + name)
         # download image to folder using requests
         response = requests.get(image)
         if response.status_code == 200:
@@ -216,10 +216,10 @@ def save_to_markdown(url):
 
     # instead of printint to console, write to file'
     # get all elements in first level of container
+    skip = 0
     for j, container in enumerate(containers):
         if j == 0:
             continue
-        skip = 0
         for i, elem in enumerate(container.find_elements(By.XPATH, ".//*")):
             if skip > 0:
                 skip -= 1
@@ -257,6 +257,6 @@ if not os.path.exists("product"):
 
 # DATA = input("Enter link/links: ")
 DATA = open("links", "r").read()
-# DATA = "https://baos.pub/if-i-could-read-only-5-books-for-the-rest-of-my-life-id-read-these-e3d1a931d101"
+# DATA = "https://nickwignall.medium.com/5-psychological-reasons-you-dont-feel-confident-58d83b4c9d60"
 for url in DATA.splitlines():
     save_to_markdown(url)
