@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "product/easy-ways-to-make-money-with-chatgpt.md",
+                "file": "product/how-i-created-3-revenue-streams-in-7-months-and-you-too-should.md",
                 "mode": "preview",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "product/easy-ways-to-make-money-with-chatgpt.md",
+                "file": "product/how-i-created-3-revenue-streams-in-7-months-and-you-too-should.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "product/easy-ways-to-make-money-with-chatgpt.md",
+                "file": "product/how-i-created-3-revenue-streams-in-7-months-and-you-too-should.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "product/easy-ways-to-make-money-with-chatgpt.md"
+                "file": "product/how-i-created-3-revenue-streams-in-7-months-and-you-too-should.md"
               }
             }
           }
@@ -149,6 +149,10 @@
   },
   "active": "14a5d8eb212b88cb",
   "lastOpenFiles": [
+    "run.bat",
+    "setup.bat",
+    "requirements.txt",
+    "product/easy-ways-to-make-money-with-chatgpt.md",
     "main.py.20bf3caffba7af5abedfeeff4fd2cf2a.tmp",
     "mediumtomd/__init__.py.b9861adabdd2b070d5e6ecc0d2263a62.tmp",
     "product/assets/images/DBEGmwruVH8ZgYwzvbrrFA.jpeg",
@@ -168,9 +172,6 @@
     "mediumtomd/__init__.py",
     "mediumtomd/mediumtomd.py",
     "mediumtomd",
-    "mediumtomd.py.ae9be1b91248500fbe8020a28d65fcf0.tmp",
-    "mediumtomd.py",
-    "product/assets/images/nJzhTfPiNcWhT4v9",
     "product/how-we-launched-and-sold-our-startup-in-less-than-3-months.md",
     "product/assets/images/1IEPwvSRMGx9W9V3lvzDsQ.png",
     "product/21-ready-to-copy-chatgpt-prompts-you-didnt-knew-about.md",
@@ -179,7 +180,6 @@
     "product/how-i-created-3-revenue-streams-in-7-months-and-you-too-should.md",
     "product/silicon-valley-bank-and-plenty-more-on-big-technology-podcast.md",
     "product/4-unsexy-one-minute-habits-that-save-me-30-hours-every-week.md",
-    "product/easy-ways-to-make-money-with-chatgpt.md",
     "product/how-i-make-1-5k-monthly-passive-income-at-age-28.md",
     "product/creating-my-first-home-server.md",
     "product/3-cloud-certifications-that-are-impactful-for-your-resume.md",
