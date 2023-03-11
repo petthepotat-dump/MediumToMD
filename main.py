@@ -243,8 +243,3 @@ def save_to_markdown(url, driver):
 DATA = open("links", "r").read()
 for url in DATA.splitlines():
     save_to_markdown(url, driver)
-
-
-
-# actually save the file to markdown
-save_to_markdown(link, driver)
