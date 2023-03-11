@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 import time
 import requests
+import codecs
 
 from selenium.webdriver.common.by import By
 
@@ -30,6 +31,7 @@ elif sys.platform == "darwin":
 
 
 driver = webdriver.Chrome(tt)
+COUNT = 0
 # get article link
 # link = input("Input Article Link: ")
 # link = "https://dariusforoux.medium.com/protect-your-thinking-time-if-you-want-to-stay-productive-d66e63825d05"
@@ -140,6 +142,10 @@ class GetInformation:
             os.mkdir(os.path.join(folderpath, "assets/images"))
         # create image path
         imagepath = os.path.join(folderpath, "assets/images/", name)
+        # check if image already downloaded
+        if os.path.exists(imagepath):
+            print("Image already downloaded.")
+            return Image(os.path.relpath(imagepath, "assets"))
         # download image to folder using requests
         response = requests.get(image)
         if response.status_code == 200:
@@ -174,26 +180,35 @@ class GetInformation:
 
 
 def load_page(url, driver):
+    driver.quit()
+    driver = webdriver.Chrome(tt)
     driver.get(url)
-    # wait for page to load
-    time.sleep(3)
-    
+
+
 # check if product exists
 if not os.path.exists("product"):
     os.mkdir("product")
 
 # TODO -- add in videos + other custom things
 
+
 def save_to_markdown(url, driver):
     load_page(url, driver)
+    # scroll down
+    driver.execute_script("window.scrollTo(300, document.body.scrollHeight);")
+    # wait for page to load
+    time.sleep(3)
+
     # remove config and header from link
     link = url.split("?")[0]
 
     name = "-".join(link.split("/")[-1].split('-')[:-1])
     filepath = "product/" + name + ".md"
     # collect all information and save to markdown file
-    statsdiv = driver.find_element(By.CLASS_NAME, convert_to_css_selector("pw-post-byline-header"))
-    authordiv = statsdiv.find_element(By.CLASS_NAME, convert_to_css_selector("pw-author"))
+    statsdiv = driver.find_element(
+        By.CLASS_NAME, convert_to_css_selector("pw-post-byline-header"))
+    authordiv = statsdiv.find_element(
+        By.CLASS_NAME, convert_to_css_selector("pw-author"))
     author = authordiv.text
 
     # FOR non memebr
@@ -205,11 +220,13 @@ def save_to_markdown(url, driver):
     # get second child div
     container = main.find_element(By.XPATH, "./*[2]")
 
-    file = open(filepath, "w")
+    # file = open(filepath, "w", encoding='')
+    file = codecs.open(filepath, "w", "utf-8")
     folderpath = os.path.dirname(filepath)
     # TODO -- determine if more stats required -- date created, etc
     # print("if want to , write more collection code~!")
-    file.write(f"# Author Information\nAuthor: {author}\n\n")
+    file.write(
+        f"# Author Information\nAuthor: {author}\n\n## Article Link\nLink: {link}\n\n")
 
     # instead of printint to console, write to file'
     # get all elements in first level of container
@@ -241,10 +258,6 @@ def save_to_markdown(url, driver):
 
 # DATA = input("Enter link/links: ")
 DATA = open("links", "r").read()
+# DATA = "https://dariusforoux.medium.com/the-5-habits-of-financially-responsible-people-a14fd0490c4e"
 for url in DATA.splitlines():
     save_to_markdown(url, driver)
-
-
-
-# actually save the file to markdown
-save_to_markdown(link, driver)
