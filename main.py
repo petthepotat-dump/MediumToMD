@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 import time
 import requests
+import codecs
 
 from selenium.webdriver.common.by import By
 
@@ -12,6 +13,7 @@ from selenium.webdriver.common.by import By
 # ----------------------------------
 intel = "chromedriver-intel"
 arm64 = "chromedriver-arm64"
+COUNT = 0
 
 # detect if os uses arm64 or 32bit, mac silicon, or mac m chip
 
@@ -27,13 +29,6 @@ elif sys.platform == "darwin":
         # mac silicon
         print("Mac Silicon detected")
         tt = arm64
-
-
-driver = webdriver.Chrome(tt)
-# get article link
-# link = input("Input Article Link: ")
-# link = "https://dariusforoux.medium.com/protect-your-thinking-time-if-you-want-to-stay-productive-d66e63825d05"
-# link = "https://jackiecolburn.medium.com/more-icebreakers-you-can-steal-for-better-meetings-72afad91067d"
 
 
 def convert_to_css_selector(selector):
@@ -72,7 +67,7 @@ class Quote:
         self.text = text
 
     def to_markdown(self):
-        return f"```{self.text}```\n"
+        return f"\n`{self.text}`\n"
 
 
 class Image:
@@ -139,7 +134,11 @@ class GetInformation:
         if not os.path.exists(os.path.join(folderpath, "assets/images")):
             os.mkdir(os.path.join(folderpath, "assets/images"))
         # create image path
-        imagepath = os.path.join(folderpath, "assets/images/", name)
+        imagepath = folderpath + "/assets/images/" + name
+        # check if image already downloaded
+        if os.path.exists(imagepath):
+            print("Image already downloaded.")
+            return Image("../product/assets/images/" + name)
         # download image to folder using requests
         response = requests.get(image)
         if response.status_code == 200:
@@ -149,11 +148,11 @@ class GetInformation:
         else:
             print("Failed to download image.")
 
-        return Image(os.path.relpath(imagepath, "assets"), image if response.status_code != 200 else None)
+        return Image(("../product/assets/images/" + name), image if response.status_code != 200 else None)
 
     # ----------------------------------
     # get quotes
-    @staticmethod
+    @ staticmethod
     def getquote(element):
         # get quote
         quote = element.text
@@ -161,7 +160,7 @@ class GetInformation:
 
     # ----------------------------------
     # get lists
-    @staticmethod
+    @ staticmethod
     def getlist(element):
         # get all li elements
         lis = element.find_elements(By.TAG_NAME, "li")
@@ -173,27 +172,29 @@ class GetInformation:
 # ----------------------------------
 
 
-def load_page(url, driver):
+def load_page(url):
+    driver = webdriver.Chrome(tt)
     driver.get(url)
+    return driver
+
+
+def save_to_markdown(url):
+    driver = load_page(url)
+    # scroll down
+    driver.execute_script("window.scrollTo(300, document.body.scrollHeight);")
     # wait for page to load
     time.sleep(3)
-    
-# check if product exists
-if not os.path.exists("product"):
-    os.mkdir("product")
 
-# TODO -- add in videos + other custom things
-
-def save_to_markdown(url, driver):
-    load_page(url, driver)
     # remove config and header from link
     link = url.split("?")[0]
 
     name = "-".join(link.split("/")[-1].split('-')[:-1])
     filepath = "product/" + name + ".md"
     # collect all information and save to markdown file
-    statsdiv = driver.find_element(By.CLASS_NAME, convert_to_css_selector("pw-post-byline-header"))
-    authordiv = statsdiv.find_element(By.CLASS_NAME, convert_to_css_selector("pw-author"))
+    statsdiv = driver.find_element(
+        By.CLASS_NAME, convert_to_css_selector("pw-post-byline-header"))
+    authordiv = statsdiv.find_element(
+        By.CLASS_NAME, convert_to_css_selector("pw-author"))
     author = authordiv.text
 
     # FOR non memebr
@@ -203,43 +204,59 @@ def save_to_markdown(url, driver):
     # get first div
     main = section.find_element(By.TAG_NAME, "div")
     # get second child div
-    container = main.find_element(By.XPATH, "./*[2]")
+    containers = main.find_elements(By.XPATH, "./*")
 
-    file = open(filepath, "w")
+    # file = open(filepath, "w", encoding='')
+    file = codecs.open(filepath, "w", "utf-8")
     folderpath = os.path.dirname(filepath)
     # TODO -- determine if more stats required -- date created, etc
     # print("if want to , write more collection code~!")
-    file.write(f"# Author Information\nAuthor: {author}\n\n")
+    file.write(
+        f"# Author Information\nAuthor: {author}\n\n## Article Link\nLink: {link}\n\n")
 
     # instead of printint to console, write to file'
     # get all elements in first level of container
     skip = 0
-    for i, elem in enumerate(container.find_elements(By.XPATH, ".//*")):
-        if skip > 0:
-            skip -= 1
+    for j, container in enumerate(containers):
+        if j == 0:
             continue
-        # check if element is: p, div, ul, blockquote, or figure
-        if elem.tag_name == "p":
-            file.write(GetInformation.getp(elem).to_markdown())
-        elif elem.tag_name == "h1":
-            file.write(GetInformation.geth1(elem).to_markdown())
-        elif elem.tag_name == "h2":
-            file.write(GetInformation.geth2(elem).to_markdown())
-        elif elem.tag_name == "ul":
-            file.write(GetInformation.getlist(elem).to_markdown())
-        elif elem.tag_name == "blockquote":
-            file.write(GetInformation.getquote(elem).to_markdown())
-            skip += 1
-        elif elem.tag_name == "figure":
-            file.write(GetInformation.getimage(elem, folderpath).to_markdown())
-        file.write("\n")
+        for i, elem in enumerate(container.find_elements(By.XPATH, ".//*")):
+            if skip > 0:
+                skip -= 1
+                continue
+            # check if element is: p, div, ul, blockquote, or figure
+            line = ""
+            if elem.tag_name == "p":
+                line = GetInformation.getp(elem).to_markdown()
+            elif elem.tag_name == "h1":
+                line = GetInformation.geth1(elem).to_markdown()
+            elif elem.tag_name == "h2":
+                line = GetInformation.geth2(elem).to_markdown()
+            elif elem.tag_name == "ul":
+                line = GetInformation.getlist(elem).to_markdown()
+            elif elem.tag_name == "blockquote":
+                line = GetInformation.getquote(elem).to_markdown()
+                skip += 1
+            elif elem.tag_name == "figure":
+                line = GetInformation.getimage(elem, folderpath).to_markdown()
+            # print(line)
+            file.write(f"{line}\n")
 
     file.close()
 
+# ----------------------------------
+
+
+# check if product exists
+if not os.path.exists("product"):
+    os.mkdir("product")
+
+# TODO -- add in videos + other custom things
 
 # ----------------------------------
 
 # DATA = input("Enter link/links: ")
 DATA = open("links", "r").read()
+# DATA = "https://nickwignall.medium.com/5-psychological-reasons-you-dont-feel-confident-58d83b4c9d60"
 for url in DATA.splitlines():
-    save_to_markdown(url, driver)
+    save_to_markdown(url)
