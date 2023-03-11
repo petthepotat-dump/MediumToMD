@@ -148,11 +148,11 @@ class GetInformation:
         else:
             print("Failed to download image.")
 
-        return Image(os.path.relpath(imagepath, "assets"), image if response.status_code != 200 else None)
+        return Image(("../product/assets/images/" + name), image if response.status_code != 200 else None)
 
     # ----------------------------------
     # get quotes
-    @staticmethod
+    @ staticmethod
     def getquote(element):
         # get quote
         quote = element.text
@@ -160,7 +160,7 @@ class GetInformation:
 
     # ----------------------------------
     # get lists
-    @staticmethod
+    @ staticmethod
     def getlist(element):
         # get all li elements
         lis = element.find_elements(By.TAG_NAME, "li")
